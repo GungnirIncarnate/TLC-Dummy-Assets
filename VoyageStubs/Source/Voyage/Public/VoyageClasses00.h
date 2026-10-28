@@ -1,0 +1,4255 @@
+#pragma once
+
+#include "VoyageStructs.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FUtilityProjectileOnProjectileHit, class AActor*, DamageSource, class UPrimitiveComponent*, OtherComp, const FHitResult&, Hit);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseCharacterOnAliveChangedDelegate, class AVoyageBaseCharacter*, Character, bool, Alive);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseCharacterOnCharacterHealthChanged, float, Value, float, MaxValue);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseCharacterOnCharacterTemperatureChanged, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageBaseCharacterOnCharacterModuleValueChanged, EModuleResourceType, Type, float, Value, float, MaxValue);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageCharacterOnCharacterWarningAddOrUpdate, EVoyageCharacterWarning, Type, float, Value, bool, bNew);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterOnCharacterWarningRemove, EVoyageCharacterWarning, Type);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterOnCharacterPowerOptimizationChanged, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageCharacterOnCharacterCarriedWeightChanged, float, Value, float, MaxValue);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterOnCharacterCarryExtraWeightChanged, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterOnEnhancersChanged, class APawn*, Character);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterPrimaryActionPressed, class APawn*, Character);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterPrimaryActionRelease, class APawn*, Character);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterSecondaryActionPressed, class APawn*, Character);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterSecondaryActionRelease, class APawn*, Character);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterInteractPressed, class APawn*, Character);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterInteractReleased, class APawn*, Character);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterOnMovementForward, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterOnMovementRight, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageCharacterOnJump);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageCharacterOnMelee);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageCharacterOnCharacterExitLadder);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageCharacterOnCharacterImpact, const FVector&, ImpactLocation, const FVector&, ImpactNormal, float, ImpactForce);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterOnCharacterSocketDisconnect, class UModuleSocketComponent*, InModuleSocketComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageCharacterOnCharacterSocketConnection, class UModuleSocketComponent*, InModuleSocketComponent, ESocketConnectionResult, Result);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterOnCharacterReelProgressChanged, float, Progress);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FVoyageCharacterOnCharacterLogFragmentUnlocked, class AVoyagePlayerController*, InPlayerController, class UVoyageLogFragmentUnlockSource*, Source, class UVoyageLogData*, log, int32, FragmentIndex, int32, Fragments);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageCharacterOnWirelessChargeStateChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageDynamicMeshActorOnCollected, class APawn*, Collector, class AVoyageDynamicMeshActor*, DynamicMeshActor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageEquipmentActorOnEquipmentAvailablityChanged, class AVoyageEquipmentActor*, Equipment, EVoyageEquipmentAvailabilityType, NewAvailability, EVoyageEquipmentAvailabilityType, PrevAvailability);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageEquipmentActorOnEquipmentActivationPressed, class AController*, Controller, int32, TriggerIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageEquipmentActorOnEquipmentActivationReleased, class AController*, Controller, int32, TriggerIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageEquipmentActorOnEquipmentInteractPressed, class AController*, Controller, class AVoyageEquipmentActor*, Equipment, int32, InteractIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageEquipmentActorOnEquipmentInteractReleased, class AController*, Controller, class AVoyageEquipmentActor*, Equipment, int32, InteractIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentActorOnEquipmentEquipped, class AController*, Controller);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentActorOnEquipmentUnequipped, class AController*, Controller);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentActorOnEquipmentPostActivation, class AController*, Controller);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageEquipmentActorOnEquipmentInterpStateChanged, EVoyageEquipmentInterpStateType, Type, EVoyageEquipmentInterpState, PrevState, EVoyageEquipmentInterpState, NewState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageEquipmentActorOnEquipmentInterpValueChanged, EVoyageEquipmentInterpStateType, Type, float, NewValue);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentActorOnEquipmentActivationModeChanged, class AVoyageEquipmentActor*, Equipment);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageEquipmentActorOnEquipmentActivationIndexChanged, int32, PrevIndex, int32, NewIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentActorOnEquipmentAttachmentAdded, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentActorOnEquipmentAttachmentRemoved, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentActorOnEquipmentAttachmentChanged, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentActorOnEquipmentStateValueChanged, class AVoyageEquipmentActor*, Equipment);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFabricatorOnFabricationStartedDelegate, class AVoyageFabricator*, Fabricator);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFabricatorOnFabricationPausedDelegate, class AVoyageFabricator*, Fabricator);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFabricatorOnFabricationResumedDelegate, class AVoyageFabricator*, Fabricator);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFabricatorOnFabricationFinishedDelegate, class AVoyageFabricator*, Fabricator);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFabricatorOnFabricationCancelledDelegate, class AVoyageFabricator*, Fabricator);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFabricatorOnActorSpawnedDelegate, class AVoyageFabricator*, Fabricator, class AActor*, Spawned);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageGameModeOnConnectedEventsChanged, const TArray<FString>&, Events);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageHUDOnMenuOpened, class UVoyageBaseUserWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageHUDOnMenuClosed, class UVoyageBaseUserWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageHUDOnPersistentWidgetDataChanged, FString, PersistentKey, const FVoyageWidgetPersistentData&, InData);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageHUDOnPersistentDataChanged, const FName&, PersistentKey, const FVoyageHUDPersistentData&, InData);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageHUDOnPersistentDataRemoved, const FName&, PersistentKey);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageHUDOnTransientDataChanged, const FName&, TransientKey, const FVoyageHUDTransientData&, InData);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageHUDOnTransientDataRemoved, const FName&, TransientKey);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageHeightCaptureActorOnCapture);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocationVolumeOnVolumeRequirementsMetChanged, class AVoyageLocationVolume*, Volume);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleGenericSwitchActorAddValueDelegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageModuleGenericSwitchActorSetValueDelegate, class AVoyageModuleGenericSwitchActor*, SwitchActor, float, OldValue, float, NewValue);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageModuleGenericSwitchActorToggleStateDelegate, class AVoyageModuleGenericSwitchActor*, SwitchActor, bool, bUpperThreshold);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleGenericSwitchActorToggleValueDelegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleGenericSwitchActorGrabbedDelegate, bool, Grabbed);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageNPCSimpleBaseCharacterCollisionAvoidanceTriggered);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePlayerControllerBaseOnInputDeviceChanged, const FVoyageInputDeviceState&, NewState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyagePlayerStatePlayerLevelChanged, class AVoyagePlayerState*, InPlayerState, int32, NewLevel, int32, PrevLevel);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyagePlayerStatePlayerSecurityLevelChanged, class AVoyagePlayerState*, InPlayerState, int32, NewLevel, int32, PrevLevel);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePlayerStatePlayerExpChanged, class AVoyagePlayerState*, InPlayerState, const FVoyageExperienceArguments&, ExpArguments);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyagePlayerStatePlayerLevelCapExpChanged, class AVoyagePlayerState*, InPlayerState, const FVoyageExperienceArguments&, ExpArguments, int32, TotalLevelCapExp);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePlayerStatePlayerSkillUnlocked, class AVoyagePlayerState*, InPlayerState, class UVoyageSkill*, InSkill);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyagePlayerStatePlayerEnhancerAdded, class AVoyagePlayerState*, InPlayerState, class UVoyageEnhancer*, InEnhancer, const FVoyageEnhancerData&, InData);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyagePlayerStatePlayerTaskAdded, class AVoyagePlayerState*, InPlayerState, class UPrimaryDataAsset*, InTaskDataAsset, const FVoyageTaskSerializeData&, InData);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePlayerStatePlayerTaskRemoved, class AVoyagePlayerState*, InPlayerState, class UPrimaryDataAsset*, InTaskDataAsset);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyagePlayerStatePlayerTaskChanged, class AVoyagePlayerState*, InPlayerState, class UPrimaryDataAsset*, InTaskDataAsset, const FVoyageTaskSerializeData&, InData);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePlayerStatePlayerTasksCleared, class AVoyagePlayerState*, InPlayerState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyagePlayerStatePlayerCommitteeAddOrUpdate, class AVoyagePlayerState*, InPlayerState, const FName&, InCommitteeName, const FVoyageCommitteeData&, NewData);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyagePlayerStatePlayerCommitteePackageAddOrUpdate, class AVoyagePlayerState*, InPlayerState, const FName&, InCommitteeName, const FVoyageCommitteePackageData&, NewPackageData);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePlayerStatePlayerHumanGrownCompleted, class AVoyagePlayerState*, InPlayerState, const FVoyageHumanGrowResult&, InResult);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePlayerStatePlayerHumanDeliveryCompleted, class AVoyagePlayerState*, InPlayerState, const FVoyageHumanGrowResult&, InResult);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePlayerStatePlayerSampleDataCollected, class AVoyagePlayerState*, InPlayerState, class UVoyageSampleDataAsset*, InSampleData);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePlayerStatePlayerSampleDataSent, class AVoyagePlayerState*, InPlayerState, class UVoyageSampleDataAsset*, InSampleData);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePossessableModuleActorOnResetModuleControlsDelegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePossessableModuleActorOnCameraUpInputDelegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePossessableModuleActorOnCameraRightInputDelegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePossessableModuleActorOnCameraZoomInDelegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePossessableModuleActorOnCameraZoomOutDelegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePossessableModuleActorOnForwardMovementInputDelegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePossessableModuleActorOnRightMovementInputDelegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePossessableModuleActorOnModuleAction1Delegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePossessableModuleActorOnModuleAction2Delegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePossessableModuleActorOnModuleAction3Delegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePossessableModuleActorOnModuleAction4Delegate, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageRocketActorOnRocketVisiblityChanged, bool, bIsRocketVisible);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageStreamingSourceExtenderActorOnActiveChanged, class AVoyageStreamingSourceExtenderActor*, Extender, bool, bActive);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageSwarmHandlerOnParticleDeath, class AVoyageSwarmHandler*, Handler, int32, ParticleKey);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageVehiclePawnOnHornInputChanged, class AVoyageVehiclePawn*, InVehicle, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageWeaponBallisticOnReloadStartedDelegate, class AVoyageWeaponBallistic*, WeaponBallistic);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageWeaponBallisticOnReloadCompletedDelegate, class AVoyageWeaponBallistic*, WeaponBallistic);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeaponBallisticOnAmmoChangedDelegate, class AVoyageWeaponBallistic*, WeaponBallistic, class UVoyageItemAmmo*, NewAmmo);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeaponBallisticOnAmmoCountChangedDelegate, class AVoyageWeaponBallistic*, WeaponBallistic, int32, CurrentAmount);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FVoyageWeaponBallisticOnAmmoMaxCountChangedDelegate, class AVoyageWeaponBallistic*, WeaponBallistic, class UVoyageItemAmmo*, NewAmmo, int32, CurrentAmount, int32, MaxAmount);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeaponBallisticOnMagazineChangedDelegate, class AVoyageWeaponBallistic*, WeaponBallistic, class UVoyageItemWeaponMagazine*, NewMagazine);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FBaseSyncUtilitySyncProcessCompletedEvent, bool, Succeeded, FText, Result);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInteractIndicatorOnInteractProgressChanged, float, Progress);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInteractiveDetectorComponentOnInteraction, class AActor*, InteractTarget, class UInteractiveObjectComponent*, InteractTargetComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FInteractiveDetectorPointerComponentOnHoverChanged, class UInteractiveObjectComponent*, InteractiveObjectComponent, bool, bTextChangedOnly, const TArray<FVoyagePointerActionArguments>&, ActiveActions);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInteractiveDetectorPointerComponentOnHoldingChanged, float, MaxValue, float, CurrentValue);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInteractiveDetectorPointerComponentOnInteract, int32, InteractIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInteractiveDetectorPointerComponentOnReleaseInteract);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInteractiveDetectorPointerComponentOnActionBegin, class UInteractiveDetectorPointerComponent*, PointerComponent, const FVoyagePointerActionArguments&, ActionArgs);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInteractiveDetectorPointerComponentOnActionEnd, class UInteractiveDetectorPointerComponent*, PointerComponent, const FVoyagePointerActionArguments&, ActionArgs);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FInteractiveDetectorPointerComponentOnActionProgress, class UInteractiveDetectorPointerComponent*, PointerComponent, EVoyageActionType, InType, float, Progress);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInteractiveObjectComponentOnInteractActionTriggered, class APawn*, MyCharacter, int32, PartId);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FModuleSocketComponentOnSocketConnectionChanged, bool, bSocketConnection);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhysicsGrabComponentOnPerformGrabDelegate, class UPrimitiveComponent*, GrabbedComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhysicsGrabComponentOnReleaseGrabDelegate, class UPrimitiveComponent*, GrabbedComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhysicsGrabComponentOnGrabObjectThrownDelegate, class UPrimitiveComponent*, GrabbedComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FPhysicsGrabComponentOnAttachmentFabricatedDelegate, class AVoyageFabricator*, Fabricator, class AActor*, SpawnedActor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhysicsGrabComponentOnStowDelegate, class UPrimitiveComponent*, StowedComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhysicsGrabComponentOnUnstowDelegate, class UPrimitiveComponent*, StowedComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRadialMenuItemOnItemTrigger, class URadialMenuItem*, Item);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageAIComponentOnThreatAdded, class AActor*, Instigator, float, Threat);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageActionButtonWidgetOnButtonAction, FName, ActionID);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageAdjustGrabBoxComponentOnForceApplied, class UVoyageAdjustGrabBoxComponent*, GrabBox, FVector, Force);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageAdjustGrabBoxComponentOnTorqueApplied, class UVoyageAdjustGrabBoxComponent*, GrabBox, FQuat, Force);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageAnchorComponentOnAnchorDropped);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageAnchorComponentOnAnchorLifted);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageBaseInventoryComponentOnInventoryIndexRemap);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageBaseInventoryComponentOnInventoryChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseInventoryComponentOnInventoryAdd, const FVoyageItemSerialize&, AddedItem, int32, Amount);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseInventoryComponentOnInventoryRemove, const FVoyageItemSerialize&, RemovedItem, int32, Amount);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseInventoryComponentOnInventorySlotAdd, int32, SlotIndex, const FVoyageItemSerialize&, AddedItem);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseInventoryComponentOnInventorySlotRemoved, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseInventoryComponentOnInventorySlotPreRemoved, int32, SlotIndex, const FVoyageItemSerialize&, AddedItem);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageBaseInventoryComponentOnInventorySlotChanged, int32, SlotIndex, int32, Amount, uint8, Flags);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageBaseInventoryComponentOnInventoryNameUpdated);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageBaseInventoryComponentOnInventorySlotFlagsChanged, int32, SlotIndex, uint8, PrevFlags, uint8, NewFlags);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageBaseInventoryComponentOnInventoryColorChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageBaseInventoryComponentOnInventoryAllowNearbyQueryChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageBaseInventoryComponentOnInventoryAutoCloseWhenEmptyChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageBaseInventoryComponentOnInventoryIconChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseUserWidgetOnPreWidgetShow, class UVoyageBaseUserWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseUserWidgetOnPostWidgetShow, class UVoyageBaseUserWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseUserWidgetOnPreWidgetRemoved, class UVoyageBaseUserWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseUserWidgetOnPostWidgetRemoved, class UVoyageBaseUserWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseUserWidgetOnRequestRemoveFromParent, class UVoyageBaseUserWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseUserWidgetOnRevealAnimationStarted, class UVoyageBaseUserWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseUserWidgetOnRevealAnimationFinished, class UVoyageBaseUserWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseUserWidgetOnHideAnimationStarted, class UVoyageBaseUserWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseUserWidgetOnHideAnimationFinished, class UVoyageBaseUserWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseUserWidgetOnWidgetPersistentDataChanged, class UVoyageBaseUserWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageCassetteComponentOnCassettePlaybackDelegate, float, Percentage, float, Length, bool, bLooping);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageCassetteComponentOnCassettePlaybackEndDelegate);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageCassetteComponentOnCassettePlayStateDelegate, EVoyageCassetteState, PrevState, EVoyageCassetteState, NewState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageCassetteComponentOnCassetteChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageCharacterMovementComponentOnWeightMovementMultiplierChanged, float, NewMultiplier);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageColorWheelOnColorChanged, class UVoyageColorWheel*, ColorWheelWidget, const FLinearColor&, NewColor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FVoyageCombatSubsystemOnDamageTakenEvent, class AActor*, Target, class AActor*, Instigator, const class UDamageType*, DamageType, float, Damage);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageCombatSubsystemOnKillEvent, class AActor*, Target, class AActor*, Instigator);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageConnectedSubsystemOnWebSocketStatusChanged, FString, Status);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageConnectedSubsystemOnEventInit, FString, CurrentZone, const TArray<FVoyageConnectedEventInfo>&, EventInfos);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageConnectedSubsystemOnEventStatusChanged, FString, CurrentZone, const FVoyageConnectedEventInfo&, EventInfo);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageConnectedSubsystemOnEventEnded, FString, CurrentZone, const FVoyageConnectedEventEndInfo&, EventEndInfo);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageConnectedSubsystemOnAccessTokenChanged, const FAccessToken&, Token);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageCrosshairWidgetOnCrosshairChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageDataAssetComponentOnDataAssetAdded, class UVoyageBaseDataAsset*, InDataAsset);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageDataAssetComponentOnDataAssetRemoved, class UVoyageBaseDataAsset*, InDataAsset);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageDestructibleObjectComponentOnDestructed, class UObject*, Target, float, Damage, float, LootMultiplier);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageDestructibleObjectComponentOnTakeDamage, class UObject*, Target, float, Amount);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageDestructibleObjectComponentOnHealthChanged, class UObject*, Target, float, Amount);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageDurabilityIndicatorComponentOnDurabilityChanged, class UVoyageDurabilityIndicatorComponent*, Indicator, float, Durability);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageDurabilityIndicatorComponentOnDamageUpdated, class UVoyageDurabilityIndicatorComponent*, Indicator, FVoyageDurabilityIndicatorDamagePoint&, DamagePoint, int32, Index);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEffectSubsystemOnCameraEnterWaterDelegate, float, Velocity);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEffectSubsystemOnCameraExitWaterDelegate, float, Velocity);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageEffectSubsystemOnTagAdded, class AActor*, SelfActor, FName, Tag);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageEffectSubsystemOnTagRemoved, class AActor*, SelfActor, FName, Tag);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFabricatorComponentStartFabricationDelegate, class UVoyageFabricatorComponent*, SourceModule, int32, QueueIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFabricatorComponentPauseFabricationDelegate, class UVoyageFabricatorComponent*, SourceModule, int32, QueueIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFabricatorComponentResumeFabricationDelegate, class UVoyageFabricatorComponent*, SourceModule, int32, QueueIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFabricatorComponentFinishFabricationDelegate, class UVoyageFabricatorComponent*, SourceModule, int32, QueueIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFabricatorComponentCancelFabricationDelegate, class UVoyageFabricatorComponent*, SourceModule, int32, QueueIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFabricatorComponentQueueFabricationDelegate, class UVoyageFabricatorComponent*, SourceModule, int32, QueueIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFabricatorComponentUpdateQueueFabricationDelegate, class UVoyageFabricatorComponent*, SourceModule, int32, QueueIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageFabricatorComponentUpdateFabricationProgressDelegate, const FVoyageFabricatorQueueItem&, QueueItem, float, Progress, float, Time);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFabricatorComponentInventoryAddedDelegate, class UVoyageFabricatorComponent*, Fabricator, class UVoyageBaseInventoryComponent*, Inventory);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFabricatorComponentInventoryRemovedDelegate, class UVoyageFabricatorComponent*, Fabricator, class UVoyageBaseInventoryComponent*, Inventory);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFabricatorComponentPatternsChangedDelegate, class UVoyageFabricatorComponent*, Fabricator);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFabricatorComponentInventoriesChangedDelegate, class UVoyageFabricatorComponent*, Fabricator);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFabricatorComponentQueueChangedDelegate, class UVoyageFabricatorComponent*, Fabricator);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageFloatingTextWidgetOnRevealAnimFinished);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageFloatingTextWidgetOnHideAnimFinished);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageFloatingTextWidgetOnMainAnimFinished);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFocusableRadioButtonEntryWidgetOnClick, int32, Index);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableWidgetOnActivation, class UVoyageFocusableWidget*, Widget, const FFocusableActivateData&, Data);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFocusableWidgetOnValueChangedDelegate, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableWidgetOnDragDelegate, class UVoyageFocusableWidget*, Widget, class UDragDropOperation*, Operation);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableWidgetOnDragEnterDelegate, class UVoyageFocusableWidget*, Widget, class UDragDropOperation*, Operation);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableWidgetOnDragLeaveDelegate, class UVoyageFocusableWidget*, Widget, class UDragDropOperation*, Operation);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableWidgetOnDragOverDelegate, class UVoyageFocusableWidget*, Widget, class UDragDropOperation*, Operation);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableWidgetOnDropDelegate, class UVoyageFocusableWidget*, Widget, class UDragDropOperation*, Operation);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableWidgetOnDragCancelledDelegate, class UVoyageFocusableWidget*, Widget, class UDragDropOperation*, Operation);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFocusableWidgetOnMouseEnterDelegate, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFocusableWidgetOnMouseLeaveDelegate, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFocusableWidgetOnHoverDelegate, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFocusableWidgetOnShowTooltip, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableWidgetOnContextMenuDelegate, class UVoyageFocusableWidget*, Widget, class UVoyageContextMenuWidget*, ContextMenuWidget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageFocusableWidgetOnContextMenuConfirmDelegate, class UVoyageFocusableWidget*, Widget, class UVoyageContextMenuWidget*, ContextMenuWidget, const FVoyageDialogResult&, DialogResult);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageGameInstanceOnLicenseStatusChanged, bool, bLicensed, bool, bIsTrial, bool, bIsTrialValid);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageGameInstanceOnPrimaryPlatformTokenChanged, FString, Token);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageGameInstanceOnSettingsChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageGameInstanceOnStateChanged, const FName&, NewState, const FName&, PrevState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageGameInstanceOnTestStarted, FString, InType);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageGameInstanceOnTestEnded, FString, InType);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageGameInstanceOnLanguageChanged, EVoyageLanguageType, LanguageType);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageGameStateSubsystemOnSaveGameBegin, class ULocalPlayer*, LocalPlayer, bool, bAutoSave, bool, bInitialSave);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FVoyageGameStateSubsystemOnSaveGameCompleted, int32, UserIndex, bool, bSuccess, bool, bAutoSave, bool, bInitialSave);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageGameStateSubsystemOnHolidayTypeChanged, EVoyageHolidayType, PrevType, EVoyageHolidayType, NewType);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageHighlightComponentOnHighlightChanged, bool, bHighlighted);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageHoverAreaWidgetOnHoverBegin);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageHoverAreaWidgetOnHoverEnd);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageInputControlsComponentOnPostAction, class AVoyagePlayerController*, InController, const class UInputAction*, InInputAction);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageInventoryDropAreaWidgetOnItemDragEnter, const FVoyageInventoryItemDropEvent&, ItemDropEvent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageInventoryDropAreaWidgetOnItemDragLeave, const FVoyageInventoryItemDropEvent&, ItemDropEvent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageInventoryDropAreaWidgetOnItemDrop, const FVoyageInventoryItemDropEvent&, ItemDropEvent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageInventoryDropAreaWidgetOnItemDragOver, const FVoyageInventoryItemDropEvent&, ItemDropEvent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageInventoryDropAreaWidgetOnItemDragCancelled, const FVoyageInventoryItemDropEvent&, ItemDropEvent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageInventoryWeightLimitedComponentOnInventoryWeightChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageInventoryWeightLimitedComponentOnInventoryWeightAdded, float, Amount);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageInventoryWeightLimitedComponentOnInventoryWeightRemoved, float, Amount);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageInventoryWeightLimitedComponentOnInventoryMaxWeightLimitChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageInventoryWidgetOnInventoryContentChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageInventoryWidgetOnInventoryWidgetActivation, class UVoyageFocusableWidget*, Widget, const FFocusableActivateData&, Data);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageInventoryWidgetOnInventoryWidgetDrag, int32, SlotIndex, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageInventoryWidgetOnInventoryWidgetDragCancel, int32, SlotIndex, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageInventoryWidgetOnInventoryWidgetDrop, int32, SlotIndex, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageInventoryWidgetOnInventoryMouseEnter, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageInventoryWidgetOnInventoryMouseLeave, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageInventoryWidgetOnInventoryFiltersChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageLegIKComponentOnLegLifted);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageLegIKComponentOnLegPlanted, FVector, PlantLocation, class UPrimitiveComponent*, PlantedPrimitive);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageLevelInstanceComponentOnInstanceLoaded);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageLevelInstanceComponentOnInstanceShown);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocatorIndicatorWidgetOnLocatorLeftClick, class UVoyageLocatorIndicatorWidget*, InWidget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocatorIndicatorWidgetOnLocatorRightClick, class UVoyageLocatorIndicatorWidget*, InWidget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocatorSubsystemOnActorSpawnedDelegate, class AActor*, Actor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocatorSubsystemOnActorDestroyedDelegate, class AActor*, Actor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageLocatorSubsystemOnStreamCellActivate, const FName&, gridname, int32, X, int32, Y);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageLocatorSubsystemOnStreamCellDeactivate, const FName&, gridname, int32, X, int32, Y);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocatorSubsystemOnLocatorRegister, class UVoyageLocatorComponent*, InLocatorComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocatorSubsystemOnLocatorUnregister, class UVoyageLocatorComponent*, InLocatorComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocatorSubsystemOnLocatorUpdated, class UVoyageLocatorComponent*, InLocatorComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocatorSubsystemOnVirtualLocatorRegister, const FVoyageLocatorProperties&, InLocatorProperties);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocatorSubsystemOnVirtualLocatorUnregister, const FVoyageLocatorProperties&, InLocatorProperties);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocatorSubsystemOnVirtualLocatorUpdated, const FVoyageLocatorProperties&, InLocatorProperties);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageLocatorSubsystemOnLocatorSourceUpdated, class UVoyageLocatorComponent*, InLocatorComponent, class UObject*, SourceObject);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageLocatorSubsystemOnLocatorArrive, class AVoyagePlayerController*, Visitor, FString, InHashKey);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageLocatorSubsystemOnLocatorDeparture, class AVoyagePlayerController*, Visitor, FString, InHashKey);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageLocatorSubsystemOnLocatorEnter, class AVoyagePlayerController*, Visitor, FString, InHashKey);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageLocatorSubsystemOnLocatorExit, class AVoyagePlayerController*, Visitor, FString, InHashKey);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocatorSubsystemOnScheduledActionAdded, const FVoyageScheduledAction&, InScheduledAction);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLocatorSubsystemOnScheduledActionRemoved, const FVoyageScheduledAction&, InScheduledAction);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageLocatorSubsystemOnLocatorRevealLocationsChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageLogDataPlayerWidgetOnIndexChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageMapIconSubsystemOnIconsChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageMeltComponentOnMeltProgress, float, Melt);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageMeltComponentOnMelted);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageMeltComponentOnMeltRateChanged, float, MeltRate);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageMinimapWidgetOnSelectedIconOptionChanged, int32, OptionIndex, const FVoyageMinimapIconOption&, Option);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageMinimapWidgetOnMinimapChanged, float, ZoomFactor, const FVector2D&, Center);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageMinimapWidgetOnMinimapInputChanged, bool, bIsKeyboardMouse);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageMinimapWidgetOnMinimapMouseChanged, const FVector2D&, LocalPos, const FVector2D&, WorldPos);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageModuleCheckpointOnGameSaveBegin);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageModuleCheckpointOnGameSaved);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageModuleCheckpointOnGameSaveError);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageModuleCheckpointOnGameSaveCancel);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleComponentOnCustomRequirementsChanged, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageModuleComponentOnModuleDesiredStateChanged, class UVoyageModuleComponent*, Module, EVoyageModuleState, OldState, EVoyageModuleState, NewState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageModuleComponentOnModuleStateChanged, class UVoyageModuleComponent*, Module, EVoyageModuleState, OldState, EVoyageModuleState, NewState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleComponentOnModuleGroupsChanged, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleComponentOnModuleValueChanged, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleComponentOnModuleCapacityFull, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleComponentOnModuleCapacityEmpty, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleComponentOnModulePropertyChanged, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleComponentOnModuleRequirementsMetChanged, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleComponentOnModuleSocketConnectionChanged, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageModuleComponentOnModulePowerStateChanged, class UVoyageModuleComponent*, SourceModule, bool, bHasPower);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageModuleComponentOnModuleDurabilityChanged, class UVoyageModuleComponent*, SourceModule, float, Durability);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageModuleComponentOnWorkloadVisualizationChanged, class UVoyageModuleComponent*, Module, float, WorkloadIntensity);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageModuleComponentOnModuleDisableChanged, class UVoyageModuleComponent*, SourceModule, bool, bDisabled);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageModuleComponentOnSignalInputChanged, class UVoyageModuleComponent*, Module, FName, Key, FVoyageSignalValue, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleSubsystemOnModuleRegistered, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageModuleSubsystemOnModuleUnregistered, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageModuleWidgetOnTrackedResourceChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageNPCComponentOnModuleValueChanged, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageOpenPortalAsyncActionOnOpened);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageOpenPortalAsyncActionOnFailed);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageOpenPortalAsyncActionOnCancelled);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageOptionsWidgetOnResolutionValueChanged, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageOptionsWidgetOnNonResolutionValueChanged, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageOptionsWidgetOnRequireRestartValueChanged, class UVoyageFocusableWidget*, Widget, bool, bState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageOutputInventoryButtonWidgetOnButtonAction, class UVoyageItem*, Item, int32, SlotIndex, int32, ChildIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageOutputInventoryButtonWidgetOnButtonInteraction, class UVoyageItem*, Item);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageOutputInventoryWidgetOnOutputInventoryItemAction, class UVoyageItem*, Item, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePathFollowingComponentOnRequestFinishedVoyage, FAIRequestID, RequestID, bool, Success);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyagePersistentRuntimeActorComponentOnRuntimeActorSpawned);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePersistentSubsystemOnActorSpawned, class AActor*, Actor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePersistentSubsystemOnActorDestroyed, class AActor*, Actor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePersistentSubsystemOnActorRestored, class AActor*, Actor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePersistentSubsystemOnActorUnloaded, class AActor*, Actor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePersistentSubsystemOnActorAttached, class AActor*, Child, class USceneComponent*, ParentComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePersistentSubsystemOnActorDetached, class AActor*, Child, class USceneComponent*, ParentComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePhysicalSnapSocketOnConnectionChanged, class UVoyagePhysicalSnapSocket*, Socket);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyagePortalComponentOnPortalStateChanged, EVoyagePortalState, NewPortalState, EVoyagePortalState, PreviousPortalState, const FName&, Destination);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePortalComponentOnPortalFoundResult, bool, Found);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyagePortalComponentOnPortalClosed);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePortalComponentOnPortalPowerStateChanged, EVoyagePortalPowerState, NewPowerState, EVoyagePortalPowerState, PreviousPowerState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePortalComponentOnPortalClosingWarning, float, Threshold, float, TimeRemaining);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePortalComponentOnPortalResourcesLow, float, SecondsRemaining);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyagePortalComponentOnPortalDestinationChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyagePortalComponentOnPortalExtended);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyagePortalComponentOnPortalExtendFailed);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyagePortalComponentOnPortalNotAvailable);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyagePortalComponentOnPortalTeleportFailed);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePortalComponentOnPortalEvent, EVoyagePortalEvent, Event);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyagePortalComponentOnPortalResourcesChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePortalComponentOnPortalTraceBegun, int32, MaxHops);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePortalComponentOnPortalTraceResultFound, const FVoyagePortalTraceResult&, Result);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePortalComponentOnPortalTraceCompleted, int32, Found, int32, NewCount);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePortalSubsystemOnPortalSearchCompleted, bool, Succeeded, const FVoyagePortalDestination&, Destination);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePortalSubsystemOnDestinationLockChanged, FString, Address, bool, bLocked);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePortalSubsystemOnDestinationFavoriteChanged, FString, Address, bool, bFavorite);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageProjectileMovementComponentOnBlockingHit, FHitResult, Hit);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageProjectileMovementComponentOnEnterWater, FHitResult, Hit);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageProjectileMovementComponentOnExitWater, FHitResult, Hit);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageProjectileMovementComponentOnHitSwarm, int32, ParticleKey);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageProjectileMovementComponentOnExitPenetration, FHitResult, Hit);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyagePropertyEditorWidgetOnTargetChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageQuestListWidgetOnQuestListChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageQuestObjectOnQuestStateChanged, class AVoyagePlayerController*, Owner, const FVoyageQuestChangedArgs&, QuestChangeArgs);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageQuestSubsystemQuestStateChanged, class AVoyagePlayerController*, Owner, const FVoyageQuestChangedArgs&, QuestChangeArgs);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageQuestSubsystemQuestAdded, class AVoyagePlayerController*, Owner, class UVoyageQuest*, Quest);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageQuestSubsystemQuestRemoved, class AVoyagePlayerController*, Owner, class UVoyageQuest*, Quest);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageQuestSubsystemQuestTrackingChanged, class AVoyagePlayerController*, Owner, class UVoyageQuestObject*, QuestObject, bool, bIsTracking);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageQuestSubsystemOnQuestEvent, class UVoyageQuestEvent*, QuestEvent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageRocketStateComponentOnStateProgressChanged, class UVoyageRocketStateComponent*, RocketStateComponent, EVoyageRocketState, CurrentState, const FVoyageRocketStateResult&, Result);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageRocketStateComponentOnStateProgressInit, class UVoyageRocketStateComponent*, RocketStateComponent, EVoyageRocketState, CurrentState, const FVoyageRocketStateResult&, Result);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageRocketStateComponentOnLaunched, class UVoyageRocketStateComponent*, RocketStateComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageRocketStateComponentOnLanded, class UVoyageRocketStateComponent*, RocketStateComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageRocketStateComponentOnLanding, class UVoyageRocketStateComponent*, RocketStateComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageRocketStateComponentOnCatching, class UVoyageRocketStateComponent*, RocketStateComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageRocketStateComponentOnResetState, class UVoyageRocketStateComponent*, RocketStateComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageRocketStateComponentOnRequestLaunch, class UVoyageRocketStateComponent*, RocketStateComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageRocketStateComponentOnRequestLaunchSequence, class UVoyageRocketStateComponent*, RocketStateComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageRocketStateComponentOnAbortLaunchSequence, class UVoyageRocketStateComponent*, RocketStateComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageRocketStateComponentOnCountdownChanged, class UVoyageRocketStateComponent*, RocketStateComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageRocketStateComponentOnCountdownSecondChanged, class UVoyageRocketStateComponent*, RocketStateComponent, int32, Remaining);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageRocketStateComponentOnFlightRemainingChanged, class UVoyageRocketStateComponent*, RocketStateComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageRotatingSceneComponentEventOnStart);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageRotatingSceneComponentEventOnStop);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageSelectionComponentOnSelectionChanged, bool, bFlag);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageSelectionComponentOnHoveredChanged, bool, bFlag);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageStatsSubsystemOnStatQueryCompleted);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageSurvivalComponentOnDeath, class AActor*, InActor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageSurvivalComponentOnAttributeAdded, const FVoyageSurvivalValue&, AddedAttribute);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageSurvivalComponentOnAttributeChanged, const FVoyageSurvivalValue&, ChangedAttribute);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageSurvivalComponentOnAttributeRemoved, const FVoyageSurvivalValue&, RemovedAttribute);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageSurvivalComponentOnLinkedAttributeChanged, const FVoyageSurvivalValue&, ChangedAttribute);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageSurvivalComponentOnAttributesReset);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageTabControlWidgetOnActiveTabChanged, class UVoyageTabControlWidget*, Widget, class UWidgetSwitcher*, Switcher, int32, ActiveTab);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageTeleportAsyncActionOnTeleported, const FTransform&, Destination);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageTeleportAsyncActionOnFailed, const FTransform&, Destination);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageTeleportAsyncActionOnCancelled, const FTransform&, Destination);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeakPointComponentOnWeakPointDamaged, class UVoyageWeakPointComponent*, WeakPoint, float, Damage);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageWeakPointComponentOnWeakPointDestroyed, class UVoyageWeakPointComponent*, WeakPoint);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageWeatherSubsystemOnVolumeUnregistered, class UVoyageWeatherVolume*, Volume);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWebBrowserWidgetOnEventResultDelegate, FString, Result, class UVoyageWebPage*, WebPage);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageWebBrowserWidgetOnGameEventDelegate, FString, Event, float, Value, class UVoyageWebPage*, WebPage);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWebPageJavascriptBindOnValueChangedDelegate, FString, InString, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWebPageJavascriptBindOnStringValueChangedDelegate, FString, InString, FString, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageWebPageJavascriptBindOnEventResultDelegate, FString, Result);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWebPageJavascriptBindOnGameEventDelegate, FString, Event, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageWebPageJavascriptBindOnPageReadyDelegate);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageWorldCaptureSubsystemOnWorldCaptureReady, int32, InWidth, int32, InHeight, const TArray<FColor>&, InBuffer);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FModulesConnectCableOnCableConnectionChangedDelegate);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FModulesConnectCableOnCableReelInDelegate);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBoatPawnOnBoatResourceChanged, class AVoyageBoatPawn*, BoatPawn);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageDoorActorOnDoorStateChanged, class AVoyageDoorActor*, Door, EVoyageDoorState, OldState, EVoyageDoorState, NewState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageDoorActorOnDoorLockedChanged, class AVoyageDoorActor*, Door);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLazarusPODOnTraitsChanged, class AVoyageLazarusPOD*, HumanPod);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLazarusPODOnPropertiesChanged, class AVoyageLazarusPOD*, HumanPod);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLazarusPODOnPropertiesUpdated, class AVoyageLazarusPOD*, HumanPod);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLazarusPODOnSimulationUpdated, class AVoyageLazarusPOD*, HumanPod);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLazarusPODOnGrowTimerChanged, class AVoyageLazarusPOD*, HumanPod);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLazarusPODOnGrowSpeedChanged, class AVoyageLazarusPOD*, HumanPod);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLazarusPODOnGrowingStarted, class AVoyageLazarusPOD*, HumanPod);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageLazarusPODOnGrowCompleted, const FVoyageHumanGrowResult&, InResult);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageLazarusRackOnPodEjected, class AVoyageLazarusPOD*, HumanPod, class AVoyageLazarusRack*, LazarusRack);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageLazarusRackOnPodAttached, class AVoyageLazarusPOD*, HumanPod, class AVoyageLazarusRack*, LazarusRack);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageLazarusRackOnFullyFunctionalChanged, class AVoyageLazarusPOD*, HumanPod, bool, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageLazarusRackOnPausedChanged, class AVoyageLazarusPOD*, HumanPod, bool, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageLazarusRackOnRequirementsMetChanged);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageNPCSpawnerActorOnNPCSpawnedDelegate, class AActor*, SpawnedActor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePlayerControllerOnActionBarChanged, int32, NewIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyagePlayerControllerOnPlayerInteractionDelegate, class AVoyagePlayerController*, Controller, class AActor*, Target, class UInteractiveObjectComponent*, TargetComponent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePlayerControllerOnPlayerInventoryDropDelegate, class UVoyageBaseInventoryComponent*, SourceInventory, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePlayerControllerOnPlayerOverlayShow, class APlayerController*, PC, class UVoyageOverlayWidgetData*, InWidgetData);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyagePlayerControllerOnPlayerOverlayHide, class APlayerController*, PC, class UVoyageOverlayWidgetData*, InWidgetData);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageVehicleCameraDronePawnOnModeChangedDelegate, EVoyageCameraDroneMode, OldMode, EVoyageCameraDroneMode, NewMode);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageVehicleCameraDronePawnOnLastSampleChanged, class AVoyageVehicleCameraDronePawn*, InDronePawn);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageVehicleCameraDronePawnOnFocusedActorChanged, class AActor*, InActor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageVehicleCameraDronePawnOnActorValidationChanged, bool, bIsValid);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageVehicleCameraDronePawnOnPictureTakenDelegate, bool, bIsValid);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageVehicleForkliftPawnOnForkInputChanged, class AVoyageVehiclePawn*, InVehicle, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageVehicleForkliftPawnOnForkTiltInputChanged, class AVoyageVehiclePawn*, InVehicle, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageVehicleForkliftPawnOnForkOffsetChanged, class AVoyageVehiclePawn*, InVehicle, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterInteractiveComponentOnMoveCargoDelegate, class AActor*, Target, ECargoType, Type);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterInteractiveComponentOnStopActionDelegate);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseBarComponentOnActiveSlotChanged, int32, SlotIndex, int32, PrevIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseBarComponentOnBarSlotActivated, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseBarComponentOnBarSlotPostActivated, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseBarWidgetOnBarItemActivated, class UVoyageFocusableWidget*, Widget, const FFocusableActivateData&, Data);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseBarWidgetOnBarDrag, int32, Slot, class UVoyageFocusableWidget*, DroppedWidget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseBarWidgetOnBarDragCancel, int32, Slot, class UVoyageFocusableWidget*, DroppedWidget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseBarWidgetOnBarDrop, int32, Slot, class UVoyageFocusableWidget*, DroppedWidget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseBarWidgetOnBarSwap, int32, SourceSlot, int32, TargetSlot);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseDetailsWidgetOnDetailsVisibilityChanged, ESlateVisibility, Visibility);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageBaseMenuUserWidgetOnMenuFocusChanged, class UVoyageBaseMenuUserWidget*, MenuWidget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageCharacterInputControlsComponentPrimaryActionPressedDelegate);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVoyageCharacterInputControlsComponentSecondaryActionPressedDelegate);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageCustomModuleComponentOnItemConsumedDelegate, class UVoyageCustomModuleComponent*, SourceModule, class UVoyageItem*, Item);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageEquipmentComponentOnItemEquipped, int32, SlotIndex, const FVoyageItemSerialize&, EquippedItem);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentComponentOnItemUnequipped, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentComponentOnItemSlotChanged, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageEquipmentComponentOnEquipmentModuleChangedDelegate, int32, SlotIndex, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageEquipmentComponentOnEquipmentInteract, class AController*, Controller, class AVoyageEquipmentActor*, Equipment, int32, InteractIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentComponentOnEquipmentBinded, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentComponentOnEquipmentUnBinded, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageEquipmentComponentOnStateValueChanged, int32, SlotIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyageFocusableButtonWidgetOnSubButtonClicked, class UVoyageFocusableWidget*, Widget);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableCheckBoxWidgetOnCheckStateChanged, class UVoyageFocusableWidget*, Widget, bool, bFlag);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableColorWidgetOnColorChanged, class UVoyageFocusableWidget*, Widget, const FLinearColor&, Color);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableIconWidgetOnIconChanged, class UVoyageFocusableWidget*, Widget, int32, Index);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableListBoxWidgetOnSelectedIndexChanged, class UVoyageFocusableWidget*, Widget, int32, Index);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableSliderWidgetOnSliderValueChanged, class UVoyageFocusableWidget*, Widget, float, Value);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageFocusableTextBoxWidgetOnTextChanged, class UVoyageFocusableWidget*, Widget, const FText&, NewText);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeaponHolsterComponentOnEquipmentModuleChangedDelegate, int32, SlotIndex, class UVoyageModuleComponent*, Module);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FVoyageWeaponHolsterComponentOnActiveHolsterStateChanged, EVoyageEquipmentInterpStateType, InType, EVoyageEquipmentInterpState, PrevState, EVoyageEquipmentInterpState, NewState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeaponHolsterComponentOnActiveHolsterStateValueChanged, EVoyageEquipmentInterpStateType, InType, float, NewValue);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeaponHolsterComponentOnActiveHolsterActivationIndexChanged, int32, PrevIndex, int32, NewIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeaponHolsterComponentOnHolsterOverlayChanged, const FName&, HighestKey, class UVoyageItem*, OverlayItem);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeaponHolsterComponentOnHolsterBallisticWeaponChanged, int32, SlotIndex, class AVoyageWeaponBallistic*, BallisticWeaponActor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeaponHolsterComponentOnHolsterInteract, class AVoyageEquipmentActor*, InEquipmentActor, int32, InteractIndex);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeaponHolsterComponentOnHolsterSlotBind, int32, SlotIndex, class AVoyageEquipmentActor*, Actor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeaponHolsterComponentOnHolsterSlotUnBind, int32, SlotIndex, class AVoyageEquipmentActor*, Actor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageWeaponHolsterComponentOnHolsterStateValueChanged, int32, SlotIndex, class AVoyageEquipmentActor*, Actor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageBaseDialogWidgetOnDialogConfirm, class UVoyageBaseDialogWidget*, DialogWidget, const FVoyageDialogResult&, DialogResult);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageIconSelectorOnIconConfirmation, class UVoyageBaseDialogWidget*, DialogWidget, const FVoyageDialogResult&, DialogResult);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVoyagePostProcessDialogOnPostProcessValueChangedDelegate, const FPostProcessSettings&, InSettings);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageReportTagSelectorWidgetOnTagConfirmation, class UVoyageBaseDialogWidget*, DialogWidget, const FVoyageDialogResult&, DialogResult);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVoyageColorSelectorOnColorConfirmation, class UVoyageColorSelector*, ColorSelector, const FLinearColor&, NewColor);
+
+#include "VoyageClasses00.generated.h"
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API ASurvivalVolume : public APhysicsVolume
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<EVoyageSurvivalAttributeType> Attributes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FVoyageSurvivalModifierProperty> Modifiers;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AUtilityCable : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* Root;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USphereComponent* SphereA;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageCableComponent* Cable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USphereComponent* SphereB;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentActorComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CableExtraLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TWeakObjectPtr<class USceneComponent> Origin;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TWeakObjectPtr<class USceneComponent> Target;
+
+	UPROPERTY(EditAnywhere)
+	uint32 OriginComponentID;
+
+	UPROPERTY(EditAnywhere)
+	uint32 TargetComponentID;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AUtilityProjectile : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageProjectileComponent* CollisionComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* StaticMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageProjectileMovementComponent* ProjectileMovement;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bDestroyOnHit;
+
+	UPROPERTY(BlueprintAssignable)
+	FUtilityProjectileOnProjectileHit OnProjectileHit;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageAIController : public AAIController
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAlwaysFocusPitch;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GoalRepathThreshold;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageBaseCharacter : public ACharacter
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageSurvivalComponent* SurvivalComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageWeaponHolsterComponent* WeaponHolsterComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageEquipmentComponent* EquipmentComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageInventoryWeightLimitedComponent* WeightInventory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageBaseInventoryComponent* OutputInventory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleComponent* PlayerModuleComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageCharacterOctreeComponent* CharacterOctreeComponent;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageBaseCharacterOnAliveChangedDelegate OnAliveChangedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageBaseCharacterOnCharacterHealthChanged OnCharacterHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageBaseCharacterOnCharacterTemperatureChanged OnCharacterTemperatureChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageBaseCharacterOnCharacterModuleValueChanged OnCharacterModuleValueChanged;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector NavProjectionDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector2D EyeGridXY;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DamageThresholdToReleaseCameraFocus;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UForceFeedbackEffect* DamageForceFeedback;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MinimumDamageForceFeedbackInterval;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MinimumDamageForceFeedback;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaximumDamageForceFeedback;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EModuleResourceType, UVoyageItemCable*> PreferredCablesByResourceType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class APawn* PossessedVehicle;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageBuilderOverrideVolume : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowTiltedBuilding;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<UVoyageItem*> BlacklistedPatterns;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<UVoyageItem*> WhitelistedPatterns;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bForceBuildAngle;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageCableUpdater : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector Wind;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageCameraFollowingActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* SceneComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageCharacter : public AVoyageBaseCharacter
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageBaseInventoryComponent* VaultInventory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePaintInventoryComponent* PaintInventory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UPhysicsGrabComponent* PhysicsGrabber;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* MeshSmoother;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowDmgRedirectByEquipmentDurability;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxTotalDmgRedirectPercentage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DmgRedirectDurabilityScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageCharacterData* CharacterData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* DeathSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* FallDamageSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageLocationFabricatorPlacementComponent* LocationFabricatorPlacementComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageDynamicPlayerInputComponent* DynamicPlayerInputComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageCharacterInputControlsComponent* PlayerInputComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UCameraComponent* FirstPersonCameraComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UWidgetInteractionComponent* WidgetInteractionComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UBuoyancyComponent* SwimmingBuoyancyComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UInteractiveDetectorPointerComponent* InteractiveDetectorPointerComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UWeaponAbilityComponent* MeleeAbilityComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UWeaponAbilityComponent> MeleeAbilityComponentClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageWeaponData* MeleeAbility;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAnimMontage* MeleeAnimation;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnCharacterWarningAddOrUpdate OnCharacterWarningAddOrUpdate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnCharacterWarningRemove OnCharacterWarningRemove;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnCharacterPowerOptimizationChanged OnCharacterPowerOptimizationChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnCharacterCarriedWeightChanged OnCharacterCarriedWeightChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnCharacterCarryExtraWeightChanged OnCharacterCarryExtraWeightChanged;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LadderSideMovementMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LadderMaxLookYaw;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SwimForwardMovementMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SwimRightMovementMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BuoyancyOverrideSubmergeCoefficient;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BuoyancyOverrideSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxLookUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxLookSides;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxLookSidesInspecting;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnEnhancersChanged OnEnhancersChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterPrimaryActionPressed PrimaryActionPressed;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterPrimaryActionRelease PrimaryActionRelease;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterSecondaryActionPressed SecondaryActionPressed;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterSecondaryActionRelease SecondaryActionRelease;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterInteractPressed InteractPressed;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterInteractReleased InteractReleased;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnMovementForward OnMovementForward;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnMovementRight OnMovementRight;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnJump OnJump;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnMelee OnMelee;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnCharacterExitLadder OnCharacterExitLadder;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnCharacterImpact OnCharacterImpact;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnCharacterSocketDisconnect OnCharacterSocketDisconnect;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnCharacterSocketConnection OnCharacterSocketConnection;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnCharacterReelProgressChanged OnCharacterReelProgressChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnCharacterLogFragmentUnlocked OnCharacterLogFragmentUnlocked;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageCharacterOnWirelessChargeStateChanged OnWirelessChargeStateChanged;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CurrentLadderHeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LastLadderHeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CurrentLadderSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector CurrentLadderOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRotator RotationTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<UVoyageLogData*, int32> UnlockedLogFragments;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FText> FabricatorPausedReasons;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EVoyageAggroState, int32> CurrentAggroState;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CurrentThreatLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageCharacterInputControlsComponent* CachedInputControlsComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageConnectedEventActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageConnectedEventInfo ConnectedEvent;
+
+	UPROPERTY(EditAnywhere)
+	TMap<FString, TWeakObjectPtr<class AActor>> StateActors;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageDestroyedActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UGeometryCollectionComponent* GeometryCollectionComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<class UGeometryCollection> DestroyedGeometryCollection;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageDynamicMeshActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FVoyageDynamicMeshActorOnCollected OnCollected;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UMeshComponent* MeshComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UBuoyancyComponent* BuoyancyComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageDynamicCollisionComponent* DynamicCollisionComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageBaseInventoryComponent* InternalInventory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* VoyagePersistentActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageDestructibleObjectComponent* DestructibleObjectComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<class UVoyageItem> VisualizationOverrideItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<TSoftObjectPtr<UVoyageItem>, int32> Items;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<class UStreamableRenderAsset> mesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SelectedVariation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bSimulatePhysics;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAwake;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float OverrideMass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BuoyancyMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bInventorySupported;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageItemSpawnSettings SpawnSettings;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UVoyageMessageWidget> MessageSubClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Scale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageItem* CurrentVisualizeItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TWeakObjectPtr<class AVoyageDynamicMeshActor> CombineTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FVoyagePackedLocalTransform> SavedBoneTransforms;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageDynamicSkeletalMeshActor : public AVoyageDynamicMeshActor
+{
+	GENERATED_BODY()
+
+public:
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageDynamicStaticMeshActor : public AVoyageDynamicMeshActor
+{
+	GENERATED_BODY()
+
+public:
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageEggSackActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* Root;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* EggRoot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UInstancedStaticMeshComponent* TentaclesMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* Persistent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAudioComponent* TentacleAudio;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USphereComponent* DamageProxy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FVoyageEggSackTentacleInfo> TentacleInfos;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageEggSackInfo EggSackInfo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageEggSackInfo EggSackInfoGenerated;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSubclassOf<class AActor>> OverlapIgnoreActorClasses;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageEquipmentActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UInputAction* ConnectCableAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UInputAction* DisconnectCableAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UInputAction* ADSAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UInputAction* InspectAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* Root;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* RotationRoot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UArrowComponent* ActivationTransform;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageInventoryWeightLimitedComponent* AttachmentInventory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FVoyageAbilityConfig> Abilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EWeaponInventorySource InventorySource;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EWeaponAttachmentType, FVector> AttachmentPointInteractOffsets;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DuckDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowActivationOnRelease;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUseTriggerIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUseActivationCooldown;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ActivationCooldownSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UVoyageMessageWidget> ResourceMessageClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAimWithActivationTransform;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowWhileSwimming;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowWhileDiving;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowInAir;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bEquipped;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAvailabilityIgnoresDuck;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UUVoyageEquipmentContextWidget> EquipmentContextWidgetClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageOverlayWidgetData* EquipmentSelector;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bHoldToADS;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EVoyageEquipmentInterpStateType, FVoyageEquipmentInterpStateConfig> InterpStates;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UVoyageEquipmentInteractComponent> PaintInventoryInteractClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UAnimInstance> EquipmentAnimationBlueprint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAnimMontage* HolsterAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAnimMontage* DrawAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAnimMontage* JumpAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAnimMontage* LandedAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UAnimMontage*> MeleeAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAnimMontage* PlayerItemUsageAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName SkeletonAttachSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bHideWhenAttachedToHolsterSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FTransform AttachLocalTransform;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCanTakeDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* AddAttachmentSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* RemoveAttachmentSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FString, float> AudioEffectProperties;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<int32, UVoyageItemEquipmentAttachment*> DefaultEquipmentAttachments;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentAvailablityChanged OnEquipmentAvailablityChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentActivationPressed OnEquipmentActivationPressed;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentActivationReleased OnEquipmentActivationReleased;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentInteractPressed OnEquipmentInteractPressed;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentInteractReleased OnEquipmentInteractReleased;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentEquipped OnEquipmentEquipped;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentUnequipped OnEquipmentUnequipped;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentPostActivation OnEquipmentPostActivation;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentInterpStateChanged OnEquipmentInterpStateChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentInterpValueChanged OnEquipmentInterpValueChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentActivationModeChanged OnEquipmentActivationModeChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentActivationIndexChanged OnEquipmentActivationIndexChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentAttachmentAdded OnEquipmentAttachmentAdded;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentAttachmentRemoved OnEquipmentAttachmentRemoved;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentAttachmentChanged OnEquipmentAttachmentChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageEquipmentActorOnEquipmentStateValueChanged OnEquipmentStateValueChanged;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<int32, UEquipmentAbilityComponent*> AbilityComponents;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<int32, FVoyageEquipmentAttachmentData> AttachmentData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EVoyageEquipmentActivationMode ActivationMode;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 BurstAmount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BurstDelay;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FName, float> AnimationCurveValues;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UCameraShakeBase* ActiveChargeCameraShake;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bEquipmentMintCondition;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageFabricator : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FVoyageFabricatorOnFabricationStartedDelegate OnFabricationStartedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageFabricatorOnFabricationPausedDelegate OnFabricationPausedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageFabricatorOnFabricationResumedDelegate OnFabricationResumedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageFabricatorOnFabricationFinishedDelegate OnFabricationFinishedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageFabricatorOnFabricationCancelledDelegate OnFabricationCancelledDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageFabricatorOnActorSpawnedDelegate OnActorSpawnedDelegate;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageFarmingSeedActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* Root;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageFloatingTextActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* RootComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UWidgetComponent* FloatingWidgetComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageFloatingTextData* FloatingTextData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText Text;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Lifetime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageFloatingTextWidget* FloatingTextWidget;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageGameMode : public AGameModeBase
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageWorldState InitialWorldState;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class ULevelSequence* OpeningSequence;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class ULevelSequence* InitialOpeningSequence;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class ULevelSequence* OutroSequence;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageLevelSequenceSettings InitialOpeningSequenceSettings;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FString, ULevelSequence*> BenchmarkSequences;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FString, FVoyageLevelSequenceSettings> BenchmarkSequenceSequenceSettings;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class APawn> BenchmarkSpectatorPawnClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BenchmarkStreamingTimeout;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageLevelSequenceSettings OpeningSequenceSettings;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageLevelSequenceSettings OutroSequenceSettings;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageOverlayWidgetData* DeathWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageDialogWidgetData* SaveGameFailureDialogData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<UVoyageItem*, int32> InitialInventoryItems;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<int32, UVoyageItemEquipment*> InitialEquipmentItems;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<int32, UVoyageItem*> InitialActionBars;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<int32, UVoyageItemHandEquipment*> InitialWeaponHolsterItems;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EVoyageSurvivalAttributeType, float> InitialSurvivalAttributes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EModuleResourceType, float> InitialPlayerModuleResourceValues;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UVoyageSkill*> InitialSkills;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageGameModeOnConnectedEventsChanged OnConnectedEventsChanged;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class ULevelSequencePlayer* IntroPlayer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class ULevelSequencePlayer* BenchmarkPlayer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class APawn* BenchmarkSpectatorPawn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class AVoyageWorldStreamingLoader* BenchmarkStreamingLoader;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageGameModeMenu : public AGameModeBase
+{
+	GENERATED_BODY()
+
+public:
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageGameState : public AGameStateBase
+{
+	GENERATED_BODY()
+
+public:
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageHUD : public AHUD
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EHudWidgetType, EInputModeType> WidgetTypeModes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EInputModeType, FInputState> WidgetInputModes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FInputState CommonDialogInputState;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<TSubclassOf<class APawn>, TSubclassOf<class UVoyageBaseUserWidget>> CharacterWidgetClasses;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EHudWidgetType, TSubclassOf<class UVoyageBaseUserWidget>> WidgetClasses;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EHudWidgetType, USoundSubmix*> WidgetSoundSubmixes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EHudWidgetType, USoundEffectSubmixPreset*> WidgetSubmixEffectPresets;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UVoyageMenuWidgetSoundData*> MenuWidgetSoundDatas;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UVoyageFocusableWidgetSoundData*> FocusableWidgetSoundDatas;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FString, TSubclassOf<class UVoyageGameStateWidget>> GameStateTopWidgetClasses;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UVoyageBaseUserWidget> MenuBackgroundWidgetClass;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageHUDOnMenuOpened OnMenuOpened;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageHUDOnMenuClosed OnMenuClosed;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageHUDOnPersistentWidgetDataChanged OnPersistentWidgetDataChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageHUDOnPersistentDataChanged OnPersistentDataChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageHUDOnPersistentDataRemoved OnPersistentDataRemoved;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageHUDOnTransientDataChanged OnTransientDataChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageHUDOnTransientDataRemoved OnTransientDataRemoved;
+
+	UPROPERTY(EditAnywhere)
+	TMap<EHudWidgetType, TWeakObjectPtr<class UUserWidget>> Widgets;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<USoundBase*> PreloadedWidgetSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSoftObjectPtr<class USoundBase>> PreloadWidgetSoundAssets;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FName, UVoyageGameStateWidget*> GameStateTopWidgets;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageBaseUserWidget* MenuBackgroundWidget;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageHeightCaptureActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneCaptureComponent2D* SceneCaptureComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UMaterial* SceneCaptureMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UMaterial* SceneCaptureMaterialPreview;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GridSize;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CaptureHeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bForceCapture;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUseDeferred;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageHeightCaptureActorOnCapture OnCapture;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UMaterialParameterCollection* MaterialParameterCollection;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSubclassOf<class AActor>> CaptureClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class USceneComponent> CaptureComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageLazarusSeed : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<UVoyageHumanProperty*, FVoyageHumanPropertyRequirement> RequiresProperties;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GrowSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxSecondsOutsideRefrigeration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GrowTimer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bRefrigerated;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bInitialized;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TimeLeft;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageLevelInstance : public ALevelInstance
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageLocatorComponent* LocatorComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageLevelScriptActor : public ALevelScriptActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AActor> TestEventActorClass;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageLocationSpawnerActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere)
+	TMap<uint64, FVoyageSpawnCountersArray> SpawnCounters;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageSpawnerVolume* SpawnerVolume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentActorComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<TSoftObjectPtr<class AActor>, FVoyageSpawnedInfo> SpawnedActors;
+
+	UPROPERTY(EditAnywhere)
+	TMap<uint64, TSoftObjectPtr<AVoyageSpawnLocation>> SpawnLocations;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageLocationVolume : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bOverridePowerOff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FString, FModuleRuntimeRequirements> RuntimeRequirements;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bRequirementsMet;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<TSubclassOf<class AActor>> IncludeActorClasses;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<TSubclassOf<class AActor>> ExcludeActorClasses;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<AActor*> IncludeActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<AActor*> ExcludeActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<FName> IncludeActorTags;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<FName> ExcludeActorTags;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<AActor*> RechargeActors;
+
+	UPROPERTY(EditAnywhere)
+	uint32 GroupId;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bHasPower;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUpdated;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bEnabled;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageSubmixSendSettings AudioSubmixSend;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bRechargeDynamicActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bRechargeStaticActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EModuleResourceType, double> RechargeRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bGroupModulesAndActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bOverlapDynamicActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bOverlapStaticActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bOverlapPawns;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bStatic;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bHighPriority;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTagContainer GameplayTags;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<AActor*> Overlaps;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<AActor*> OverlapsTagged;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<AActor*> PendingGroupRegistration;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageLocationVolumeOnVolumeRequirementsMetChanged OnVolumeRequirementsMetChanged;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageLocatorActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageLocatorComponent* LocatorComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageMenuPawn : public APawn
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageInterfaceInputControlsComponent* InputControls;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageMeshMorphVFXActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UNiagaraComponent* NiagaraComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class AActor* SourceActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class AActor* TargetActor;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModularOutpostActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<UVoyageExpansionSlotComponent*, AVoyageOutpostExpansionIndicatorActor*> SpawnedExpansionActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AVoyageOutpostExpansionIndicatorActor> ExpansionIndicatorActorAdd;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AVoyageOutpostExpansionIndicatorActor> ExpansionIndicatorActorRemove;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool Regenerate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FVoyageModularOutpostModuleConfiguration> Modules;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector MinExtent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector MaxExtent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AActor> Root;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Seed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxModules;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxBranchDepth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ModuleDistancePriority;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FVoyageModularOutpostPath> Paths;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSoftObjectPtr<class AActor>> SpawnedModules;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UVoyageExpansionSlotComponent*> AvailableExpansionSlots;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UVoyageExpansionSlotComponent*> UsedExpansionSlots;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCollectable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleComponent* ModuleComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageDestructibleObjectComponent* DestructibleObjectComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleAnchor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageAnchorComponent* VoyageAnchor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageCableComponent* F;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageFastSceneComponent* Anchor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* Root;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* Roller;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* spool;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UNiagaraComponent* NewNiagaraSystem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAudioComponent* Audio;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool AnchorDropped;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool AnchorSimulating;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool AudioStopping;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double AnchorDepth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double Speed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double Temperature;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double FreezeTimer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double ReleaseStuckAnchorTimer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double CurrentLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double CableLengthLast;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double AnchorStrength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector AnchorLockLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector LastWorldLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FTransform AnchorTransform;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleBoilerActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* RootMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleBoilerComponent* BoilerComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* WaterSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* MethaneSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* SteamSocket;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleCommandActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName CommandKey;
+
+	UPROPERTY(EditAnywhere)
+	uint64 TargetModuleAddress;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float OnValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float OffValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageSignalOption OnChoice;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageSignalOption OffChoice;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bReleaseWhenOff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName DefaultCommandKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* RootMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* CommandSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UInteractiveObjectComponent* InteractiveObject;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UBoxComponent* InteractBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 CommandIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 TargetIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 OnChoiceIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 OffChoiceIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 OnChoiceGroupIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 OffChoiceGroupIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bActive;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleConveyorBeltActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleComponent* ModuleComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* Root;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USplineComponent* Spline;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UStaticMeshComponent*> BeltComponents;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GeometryLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Velocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float RotationVelocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector Scale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CurrentTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CurrentOffset;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleDataPortActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* RootMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* DataSocket;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleEngineActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* RootMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAudioComponent* EngineAudio;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleEngineComponent* ModuleEngineComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageDestructibleObjectComponent* DestructibleObjectComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleFishingActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double MaxLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double FishingRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double Resistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double NetWeightConsumptionMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DropCableLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double RaisedLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double MinLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double LowerSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double RaiseSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double CableSpring;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double CableDamping;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector ContainerLoweredOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ContainerMoveTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double FullRateSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double MaxCatchInterval;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float VolumeSearchRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName RootComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName NetComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName NetCableSceneComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName CableComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName CableSnapPointComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName RollerComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ReelComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ContainerComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName SwitchComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName AudioComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ModuleWidgetComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName WidgetSetConsumptionFunction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName WidgetSetNetMovementFunction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ContainerSetInteractionEnabledFunction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName LowerStartAudioTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName LowerEndAudioTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName RaiseStartAudioTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName RaiseEndAudioTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool NetDropped;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FTransform NetTransform;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double FishingCounter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double CurrentLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double LastLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double NetWeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double InventoryMaxWeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool FullyRaised;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EVoyageFishingNetState NetState;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double SelectedChangeValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double DefaultConsumption;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* RootScene;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageFastSceneComponent* NetMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* NetCableScene;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageCableComponent* CableComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* CableSnapPoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* RollerComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* ReelMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UChildActorComponent* ContainerChildActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UChildActorComponent* SwitchChildActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAudioComponent* WinchAudio;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleWidgetComponent* ModuleWidgetComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageBaseInventoryComponent* InventoryComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleGenericSwitchActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleComponent* ModuleComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EGenericSwitchPowerType SwitchType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSubclassOf<class UVoyageModuleGenericSwitchCustomToggleFunction>> CustomToggleFunctions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FComponentReference HandleComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FComponentReference HandleParentComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FComponentReference ConstraintComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAddModuleRequirement;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FModuleCustomRequirement CustomRequirement;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool SynchronizeWithParentPowerState;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool ResetWhenRequirementsNotMet;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float OnThreshold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float OffThreshold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool AllowNegative;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsSlider;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool SnapToTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SnapRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ResetSpeedMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Value;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bResetting;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ResetTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsOn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsLocked;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bOutputAnalog;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Range;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Revolutions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<AVoyageModuleGenericSwitchActor*> SynchronizedSwitches;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName OutputDataKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageModuleDataFilter OutputDataFilter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 OutputPriority;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FComponentReference OutputSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool GrabbedLast;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAddedValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bChangedValue;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageModuleGenericSwitchActorAddValueDelegate AddValueDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageModuleGenericSwitchActorSetValueDelegate SetValueDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageModuleGenericSwitchActorToggleStateDelegate ToggleStateDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageModuleGenericSwitchActorToggleValueDelegate ToggleValueDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageModuleGenericSwitchActorGrabbedDelegate GrabbedDelegate;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleHeaterActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName HeatParameterName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName HeatEffectSpawnRateParameter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float HeatEffectMaxSpawnRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* RootMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleHeaterComponent* HeaterComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* SteamSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UNiagaraComponent* HeatEffect;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleLevelSensorActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ReadingKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float OnAbove;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float OffBelow;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bInvert;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* RootMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleLevelSensorComponent* SensorComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* CollectorSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* EmitterSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* ProbeSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UInteractiveObjectComponent* InteractiveObject;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UBoxComponent* InteractBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bLevelHigh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CurrentReading;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bHasReading;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleLogicGateActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EVoyageLogicGateOperation Operation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* RootMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleLogicGateComponent* LogicGateComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleTransistorGateComponent* InputAComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleTransistorGateComponent* InputBComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* CollectorSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* EmitterSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* InputASocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* InputBSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UInteractiveObjectComponent* InteractiveObject;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UBoxComponent* InteractBox;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleMovablePlatform : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* ActorRoot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* MovableMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USplineComponent* Spline;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMesh* SupportMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EMovablePlatformMeshDirection MeshDirection;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bStartAtTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MoveSpeedByMeter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Offset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float StartOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float EndOffset;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleResourceScreenActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* MyRoot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UTextRenderComponent* TextRenderComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleComponent* MyModule;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleRotorActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ResourceToRotationSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float RotationSpeedToLinearSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Power;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double SpeedDamping;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double RotationSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bReversing;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* ThrustPoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* SpinPivot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* PropellerMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UNiagaraComponent* SplashEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* SplashCullPosition;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAudioComponent* EngineSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ThrustPointName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName SpinPivotName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName PropellerMeshName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName SplashEffectName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName SplashCullPositionName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName EngineSoundName;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleSignalActuatorActor : public AVoyageModuleCommandActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName InputKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* SignalSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageSignalValue InputValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 InputKeyIndex;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleSignalDisplayActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName SignalKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EVoyageSignalType SignalType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName FractionParameterName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ValueParameterName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName VectorParameterName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUpdateChildActorMeshes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* RootMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* SignalSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageSignalValue CurrentValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Fraction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ShownKey;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleSignalProcessorActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EVoyageSignalOperation Operation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<EVoyageSignalOperation> AllowedOperations;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName InputAKey;
+
+	UPROPERTY(EditAnywhere)
+	uint64 SourceModuleAddress;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName InputBKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUseConstant;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Constant;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Hysteresis;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName OutputKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName DefaultOutputKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* RootMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* InputASocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* InputBSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* OutputSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UInteractiveObjectComponent* InteractiveObject;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UBoxComponent* InteractBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 OperationIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 InputAIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 InputBIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 OutputIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SourceIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageSignalValue ValueA;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageSignalValue ValueB;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageSignalValue Result;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bState;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bPrevA;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bPrevB;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Timer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Count;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FVoyageDelayedSignal> DelayQueue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageSignalValue Delayed;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleSignalSwitchActor : public AVoyageModuleCommandActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UChildActorComponent* SwitchComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleSocketScreenActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* MyRoot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UTextRenderComponent* TextRenderComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UModuleSocketComponent* Socket;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleTerminalActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 DefaultStyleIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageTerminalData* TerminalData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FVoyageTerminalCommand> TerminalDynamicCommands;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UVoyageQuest*> TerminalQuests;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<FName> CameraTags;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName TerminalID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 StyleIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 PreviousStyleIndex;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleTransistorActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* RootMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleTransistorComponent* TransistorComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleTransistorGateComponent* GateComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* CollectorSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* EmitterSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* GateSocket;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageModuleWirelessRelayActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Channel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* RootMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* LinkSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UInteractiveObjectComponent* InteractiveObject;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UBoxComponent* InteractBox;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageNPCBaseCharacter : public AVoyageBaseCharacter
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageNPCComponent* NPCComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageNPCSimpleAIController : public AVoyageAIController
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TargetRefreshInterval;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float InvestigateReachedRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TargetLostGraceTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TargetGiveUpDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TargetVisibilityLossGrace;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DefaultAttackRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AttackRangeHysteresis;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStateTreeAIComponent* StateTreeAI;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class AActor* CurrentTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bSleeping;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bTargetReachable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector TargetLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector LastKnownTargetLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DistanceToTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AttackRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bTargetVisible;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bTargetInAttackRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCanAttackTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAttackIntent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bStateTreeOwnsAttackIntent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float RecentDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUnderHeavyFire;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float RecentDamageHalfLife;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float HeavyFireHealthFraction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float HeavyFireCalmTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SleepAfterTimeWithoutTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TimeWithoutTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float IdleTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bFocusFollowsTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bTrackFriendly;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FriendlyFollowDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class AActor* FriendlyTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector FriendlyFollowLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FriendlyGuardRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FriendlyGuardHysteresis;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FriendlyLeashRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FriendlyLeashReturnRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bReturningToFriendly;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageNPCSimpleBaseCharacter : public AVoyageNPCBaseCharacter
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageAIComponent* VoyageAI;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* AttackPoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageExperienceComponent* VoyageExperience;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAudioComponent* Audio;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UArrowComponent* WeaponAbilityOrigin;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageDamageResistanceComponent* VoyageDamageResistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageSwarmAttractorComponent* VoyageSwarmAttractor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageSpawnerVolume* VoyageSpawnerVolume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double IdleSwimImpulse;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double AggroSwimImpulse;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SleepBrakeDamping;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SleepBrakeStopSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double IdleSwimRotation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double AggroSwimRotation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double CollisionTraceDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector CollisionReflect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double MaxVelocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxTorque;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TorqueDamping;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double BuoyancyMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool EnableCollisionAvoidance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool EnableRangedProjectileAbility;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool EnableMeleeAbility;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool EnableFaceTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool EnableBasicSwimming;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool EnableBuoyancyControl;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool EnableAudioVelocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AudioVelocityUpdateThreshold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double WeaponAbilityCooldownTimerLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageAttack MeleeAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool AttackingMelee;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool AttackingRanged;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool WantsToAttackRanged;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double KeepRangeToTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double MinimumAttackRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool ShootAtFocalPoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double MaxAngleTowardFocalPoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool WeaponAbilityActive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double WeaponActivationTimer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double WeaponReactivationTimer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FTimerHandle WeaponAbilityCooldownTimerHandle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double SpecialAttackCharge;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool SpecialAttackChargeActive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool Alive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double BuoyancyCoefficient;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FTimerHandle CollisionTimer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UNiagaraSystem* OnDeathSystemTemplate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageDamageResistance DamageResistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FTransform MeshRelativeTransform;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FTransform CapsuleRelativeTransform;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyageNPCSimpleBaseCharacterCollisionAvoidanceTriggered CollisionAvoidanceTriggered;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName BuoyancyComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName DynamicWavesComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName WeaponAbilityCommonComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName WeaponAbilitySpecialComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName DurabilityIndicatorComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UBuoyancyComponent* Buoyancy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UWeaponAbilityComponent* WeaponAbilityCommon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UWeaponAbilityComponent* WeaponAbilitySpecial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageDurabilityIndicatorComponent* DurabilityIndicator;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageNoCookActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bNeverCook;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageObjectFilterActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UVoyageObjectFilter*> ObjectFilters;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageOceanTrashArea : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FVoyageContainerItemTables> Containers;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVoyageLootItemTables FishingItemTables;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double Radius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxToSpawnActive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxToSpawn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double SpawnInterval;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double EmptyRadiusRequirement;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SpawnedActorPruneDelay;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSoftObjectPtr<class AActor>> SpawnedActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 TotalSpawned;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LastSpawnTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName SpawnerVolumeComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName RadiusGizmoComponentName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageSpawnerVolume* SpawnerVolume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USphereComponent* RadiusGizmo;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageOutpostExpansionIndicatorActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* mesh;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageOutpostModuleActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyagePersistentActorReferenceRedirector : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FName, TSoftObjectPtr<class AActor>> Redirections;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FName, FVoyagePersistentActorReferenceRedirection> RedirectionsMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<UVoyagePersistentActorReference*, FVoyagePersistentActorReferenceRedirection> RedirectionMap;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyagePersistentRuntimeActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* Root;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentRuntimeActorComponent* PersistentRuntimeActorComponent;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyagePlayerCameraManager : public APlayerCameraManager
+{
+	GENERATED_BODY()
+
+public:
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyagePlayerControllerBase : public APlayerController
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UVoyageInputContextAsset*> RemappableInputContexts;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerControllerBaseOnInputDeviceChanged OnInputDeviceChanged;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyagePlayerControllerMenu : public AVoyagePlayerControllerBase
+{
+	GENERATED_BODY()
+
+public:
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyagePlayerState : public APlayerState
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageActionBarComponent* ActionBar;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCompleteTrackedTaskWhenOnBuild;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCompleteTrackedTaskWhenOnCraft;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCompleteTrackedTaskWhenOnRepair;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCompleteTrackedTaskWhenOnDismantle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FMessageContent LevelUpMessage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 LevelUpMessageListIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FMessageContent InitialLevelUpMessage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 InitialLevelUpMessageListIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FMessageContent DiscoveryMessage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 DiscoveryMessageListIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FMessageContent SkillToolUnlockMessage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FMessageContent SkillVaultUnlockMessage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FMessageContent PaintSetVaultUnlockMessage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SkillToolUnlockMessageListIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SkillVaultUnlockMessageListIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 PaintSetVaultUnlockMessageListIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FMessageContent ScannedMessage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FMessageContent ScanBuildVaultUnlockMessage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bGainExpOnScan;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ScanVaultUnlockMessageListIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* LevelUpSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* SkillUpSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* EnhancerUpSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* EnhancerUpBigSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* ScanSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USoundBase* PaintUnlockSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<EVoyageExperienceType, USoundBase*> ExpSounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageHumanGrowMetadataAsset* HumanGrowMetadata;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerLevelChanged PlayerLevelChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerSecurityLevelChanged PlayerSecurityLevelChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerExpChanged PlayerExpChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerLevelCapExpChanged PlayerLevelCapExpChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerSkillUnlocked PlayerSkillUnlocked;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerEnhancerAdded PlayerEnhancerAdded;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerTaskAdded PlayerTaskAdded;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerTaskRemoved PlayerTaskRemoved;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerTaskChanged PlayerTaskChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerTasksCleared PlayerTasksCleared;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerCommitteeAddOrUpdate PlayerCommitteeAddOrUpdate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerCommitteePackageAddOrUpdate PlayerCommitteePackageAddOrUpdate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerHumanGrownCompleted PlayerHumanGrownCompleted;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerHumanDeliveryCompleted PlayerHumanDeliveryCompleted;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerSampleDataCollected PlayerSampleDataCollected;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePlayerStatePlayerSampleDataSent PlayerSampleDataSent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameProgress PlayerGameProgress;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyagePortalModuleActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* SceneRoot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* PortalMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePortalComponent* PortalComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* ExitLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UChildActorComponent* PortalVisual;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UChildActorComponent* PortalConsole;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleSocketViewComponent* ChargeSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString LocatorGroup;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyagePortalTestListener : public AActor
+{
+	GENERATED_BODY()
+
+public:
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyagePossessableModuleActor : public APawn
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleComponent* ModuleComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageModuleInputControlsComponent* InputControls;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageSpringArmComponent* SpringArmComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* CameraOffsetCheckComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* CameraAttachmentComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UCameraComponent* CameraComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ExitComponentTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bTrackPlayerPawnDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxPlayerPawnDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAutoPossess;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bPreserveControlRotation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LookUpDownRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LookLeftRightRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ZoomRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CameraPitchLowerLimit;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CameraPitchTopLimit;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePossessableModuleActorOnResetModuleControlsDelegate OnResetModuleControlsDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePossessableModuleActorOnCameraUpInputDelegate OnCameraUpInputDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePossessableModuleActorOnCameraRightInputDelegate OnCameraRightInputDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePossessableModuleActorOnCameraZoomInDelegate OnCameraZoomInDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePossessableModuleActorOnCameraZoomOutDelegate OnCameraZoomOutDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePossessableModuleActorOnForwardMovementInputDelegate OnForwardMovementInputDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePossessableModuleActorOnRightMovementInputDelegate OnRightMovementInputDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePossessableModuleActorOnModuleAction1Delegate OnModuleAction1Delegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePossessableModuleActorOnModuleAction2Delegate OnModuleAction2Delegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePossessableModuleActorOnModuleAction3Delegate OnModuleAction3Delegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FVoyagePossessableModuleActorOnModuleAction4Delegate OnModuleAction4Delegate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class APawn> DriverClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector DriverEnterRelativeLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRotator SpringRotation;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageResourceIndicatorActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float UpdateThreshold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UMaterialInterface* CustomMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UMaterialInstanceDynamic* DynamicMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UVoyageModuleComponent*> Modules;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageRocketActor : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FVoyageRocketActorOnRocketVisiblityChanged OnRocketVisiblityChanged;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageRocketCollectorActor : public AVoyageCameraFollowingActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentActorComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 RocketsCollected;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 PodsCollected;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageSecurityCameraActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageSecurityCameraRootComponent* Root;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* RotationRoot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneCaptureComponent2D* SceneCapture;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText CameraName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName CameraTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCapturing;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageSonarActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSet<TSubclassOf<class AActor>> HighlightedActorClasses;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageSpaceTerminalActor : public AVoyageModuleActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USceneComponent* Root;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USphereComponent* ProximitySphere;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageHumanGrowMetadataAsset* HumanGrowMetadataAsset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float HumanPageProbability;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BlankPageProbability;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CommitteeMemberProbability;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MinRequiredProfessions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxRequiredProfessions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float PageDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float PageRandomMin;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float PageRandomMax;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 StaticSeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MinYearRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxYearRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MinTraitRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxTraitRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bDrawManually;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UVoyageItemMemoryTrait*> AllProfessions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UVoyageItemMemoryTrait*> OnlyTraits;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<UWidgetComponent*, float> WidgetComponents;
+};
+
+UCLASS(Blueprintable, BlueprintType)
+class VOYAGE_API AVoyageSpawnLocation : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyagePersistentActorComponent* PersistentActorComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UVoyageSpawnerVolume* Volume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FVoyageSpawnInfo> SpawnArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<TSoftObjectPtr<AActor>, int32> SpawnedActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<int32, int32> SpawnedParticles;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTagContainer SpawnPointFilterTags;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowDuringDayTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowDuringNightTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowInPlayerView;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowOutsidePlayerView;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowInDarkness;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowInLight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowInWater;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowAboveWater;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bForceAtWaterLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bForceAtFloorLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bRequiresFloor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bRequiresNoFloor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bRequiresCeiling;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bRequiresNoCeiling;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LightThreshold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MinimumRangeFromCamera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bRequiresTemperatureRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MinTemperature;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxTemperature;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUseFeltTemperature;
+};

@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Voyage Stubs",
+	"Description": "Generated reflection-only stubs for the game native module",
+	"Category": "Modding",
+	"CanContainContent": false,
+	"Modules": [
+		{ "Name": "Voyage", "Type": "Runtime", "LoadingPhase": "PostConfigInit" }
+	],
+	"Plugins": [
+		{ "Name": "AudioGameplayVolume", "Enabled": true },
+		{ "Name": "AudioSynesthesia", "Enabled": true },
+		{ "Name": "EnhancedInput", "Enabled": true },
+		{ "Name": "GameplayStateTree", "Enabled": true },
+		{ "Name": "Gauntlet", "Enabled": true },
+		{ "Name": "ModularGameplay", "Enabled": true },
+		{ "Name": "Niagara", "Enabled": true },
+		{ "Name": "StateTree", "Enabled": true },
+		{ "Name": "Water", "Enabled": true },
+		{ "Name": "WebBrowserWidget", "Enabled": true }
+	]
+}
