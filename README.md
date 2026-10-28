@@ -6,3 +6,6 @@ The assets are intended as a resource for modders and may still contain
 incomplete data, inaccuracies, or other issues. Please review and test them
 before using them in a project or distributing modifications that depend on
 them.
+
+Please raise an issue with any details relating to assets that have problems 
+or are missing.
